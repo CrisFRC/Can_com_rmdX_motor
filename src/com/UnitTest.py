@@ -9,7 +9,7 @@ class SendMess(unittest.TestCase):
         header = 'codeTypeAccionHex'
         param = 'send.torque'
         data = cf.getValueConfig(header,param)
-        data_goal = [0xA1, 0x00, 0x00]
+        data_goal = 0xA1
         print(data)
         self.assertEqual(data,data_goal)
         

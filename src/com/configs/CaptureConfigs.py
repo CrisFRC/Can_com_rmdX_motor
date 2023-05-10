@@ -12,9 +12,14 @@ def getValueConfig(header,param):
     return getDataHex(config.get(header,param))
 
 def getDataHex(data):
-    data = data.split(',')
-    data_send =  []
-    for value in data:
-        data_send.append(int(value,16))
-    return data_send
+
+
+    if len(data) > 1:
+        data = data.split(',')
+        data_send =  []
+        for value in data:
+            data_send.append(int(value,16))
+        return data_send
+    else:
+        return int(data,16)
 

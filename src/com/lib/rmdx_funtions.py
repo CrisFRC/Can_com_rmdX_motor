@@ -29,17 +29,13 @@ def setup(self):
     self.bus = bus
     return self.bus
 
+# -------- sends command -------------------------
 
 
-
-def sendMessToMotor(self,motor_id,data_command):
-
-    
+def sendToSingleMotor(self,motor_id,data_command):
     # ----------------- send data to motor ---------------------
     can_id = motor_id
     data = data_command
-
-
     msg = can.Message(arbitration_id=can_id,data=data, is_extended_id=False)
     #send message
     self.bus.send(msg)
@@ -55,9 +51,18 @@ def sendMessToMotor(self,motor_id,data_command):
     os.system('sudo /sbin/ip link set can0 down')
     print("MENSAJE RECIVIDO : " + str(receive_message.data))
 
+#def sendToMultiMotor(self,motor_id)
+
+# ------ main commands ------------------
+def stopMotor(self):
+    
     
 # ----- current(torque) -----------------
+
+
+
 # ----- speed ---------------------------
 # ----- position ------------------------
 # ----- encoder -------------------------
 # ----- error ---------------------------
+# ----- aceleration ---------------------
