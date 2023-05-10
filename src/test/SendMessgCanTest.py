@@ -1,7 +1,7 @@
 
 import unittest
-import rmdx_funtions as rmdx
-from configs import CaptureConfigs as cf
+from com.lib import rmdx_funtions  as rmdx
+from com.configs import CaptureConfigs as cf
 
 class SendMess(unittest.TestCase):
     def send_mess_can(self):
