@@ -36,14 +36,6 @@ def sendMessToMotor(self,motor_id,data_command):
 
     
     # ----------------- send data to motor ---------------------
-    #define message
-    #can_id = 0x142 #can direction 140 + motor ID
-    #data = [0x31, 0x00, 0x04, 0x01, 0x04, 0x01, 0x04, 0x01] #variables PID
-    #data= [0x81, 0x00, 0x00, 0x00,0x00, 0x00, 0x00, 0x00] #apagar motor
-    #data= [0x88, 0x00, 0x00, 0x00,0x00, 0x00, 0x00, 0x00] #encender
-    #data = [0xA1, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00] #torque
-    #data= [0xA2, 0x00, 0x00, 0x00,0x64, 0x64, 0x64, 0x64] #speed control
-
     can_id = motor_id
     data = data_command
 
@@ -62,5 +54,10 @@ def sendMessToMotor(self,motor_id,data_command):
         
     os.system('sudo /sbin/ip link set can0 down')
     print("MENSAJE RECIVIDO : " + str(receive_message.data))
-    
 
+    
+# ----- current(torque) -----------------
+# ----- speed ---------------------------
+# ----- position ------------------------
+# ----- encoder -------------------------
+# ----- error ---------------------------
