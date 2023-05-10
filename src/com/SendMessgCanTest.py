@@ -5,7 +5,7 @@ import configs.CaptureConfigs as cf
 
 class SendMess(unittest.TestCase):
 
-    def test_get_propertie(self):
+    def test_get_properties(self):
         header = 'codeTypeAccionHex'
         param = 'send.torque'
         data = cf.getValueConfig(header,param)
