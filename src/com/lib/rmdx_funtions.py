@@ -1,66 +1,109 @@
 import can
 import os
 import time
-from configs import CaptureConfigs as cf
-
-def __init__(self,identifier):
-    self.bus = None
-    self.identifier = identifier
+import configparser
+from pathlib import Path
+import os
 
 
-def setup(self):
-    #----------------- setup can ------------------------------
-    try:
-        os.system('sudo /sbin/ip link set can0 up type can bitrate 1000000')
-        #os.system('sudo ifconfig can0 up')
-        time.sleep(0.1)
-    except Exception as e:
-        print(e)
-    
-    try:
-        #can conection config
-        bus = can.interface.Bus(bustype = 'socketcan',channel = 'can0')# socketcan_native
-    except OSError:
-        print('err: PiCAN board was not found')
-        exit()
-    except Exception as e:
-        print(e)
+class RMDX:
 
-    self.bus = bus
-    return self.bus
+    def __init__(self):
+        self.bus = None
+        self.header = 'codeTypeAccionHex'
+        # self.auto = self.getValueConfig(self.header,'util.null')
 
 
-
-
-def sendMessToMotor(self,motor_id,data_command):
-
-    
-    # ----------------- send data to motor ---------------------
-    #define message
-    #can_id = 0x142 #can direction 140 + motor ID
-    #data = [0x31, 0x00, 0x04, 0x01, 0x04, 0x01, 0x04, 0x01] #variables PID
-    #data= [0x81, 0x00, 0x00, 0x00,0x00, 0x00, 0x00, 0x00] #apagar motor
-    #data= [0x88, 0x00, 0x00, 0x00,0x00, 0x00, 0x00, 0x00] #encender
-    #data = [0xA1, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00] #torque
-    #data= [0xA2, 0x00, 0x00, 0x00,0x64, 0x64, 0x64, 0x64] #speed control
-
-    can_id = motor_id
-    data = data_command
-
-
-    msg = can.Message(arbitration_id=can_id,data=data, is_extended_id=False)
-    #send message
-    self.bus.send(msg)
-    time.sleep(0.1)
-    print("MENSAJE: " + str(msg.data) )
-
-    # ------------------ read message ----------------------
-    receive_message = self.bus.recv(10.0)
-    if receive_message is None:
-        print('Timeout occurred, no message.')
-        os.system('sudo /sbin/ip link set can0 down')
+    def setup(self):
+        #----------------- setup can ------------------------------
+        try:
+            os.system('sudo /sbin/ip link set can0 up type can bitrate 1000000')
+            #os.system('sudo ifconfig can0 up')
+            time.sleep(0.1)
+        except Exception as e:
+            print(e)
         
-    os.system('sudo /sbin/ip link set can0 down')
-    print("MENSAJE RECIVIDO : " + str(receive_message.data))
-    
+        try:
+            #can conection config
+            bus = can.interface.Bus(bustype = 'socketcan',channel = 'can0')# socketcan_native
+        except OSError:
+            print('err: PiCAN board was not found')
+            exit()
+        except Exception as e:
+            print(e)
+
+        self.bus = bus
+        return self.bus
+
+    # -------- sends command -------------------------
+
+
+    def sendToMotor(self,motor_id,data_command):
+        # ----------------- send data to motor ---------------------
+        can_id = motor_id
+        data = data_command
+        msg = can.Message(arbitration_id=can_id,data=data, is_extended_id=False)
+        #send message
+        self.bus.send(msg)
+        time.sleep(0.1)
+        print("MENSAJE: " + str(msg.data) )
+
+        # ------------------ read message ----------------------
+        receive_message = self.bus.recv(10.0)
+        if receive_message is None:
+            print('Timeout occurred, no message.')
+            os.system('sudo /sbin/ip link set can0 down')
+            
+        os.system('sudo /sbin/ip link set can0 down')
+        print("MENSAJE RECIVIDO : " + str(receive_message.data))
+        return receive_message
+
+    #def sendToMultiMotor(self,motor_id)
+
+    # ------ main commands ------------------
+    def stopMotor(self, motor_id):
+        param = 'motor.stop'
+        command = self.getValueConfig(self.header,param)
+        message = [command,0x00,0x00,0x00,0x00,0x00,0x00,0x00]
+        return self.sendToMotor(motor_id,message)
+        
+        
+    # ----- current(torque) -----------------
+
+
+
+    # ----- speed ---------------------------
+    def speedClosedLoop(self,motor_id, data):
+        param = 'send.speed'
+        command = self.getValueConfig(self.header,param)
+        message = [command, 0x00, 0x00, 0x00,
+                   data[0], data[1], data[2], data[3]]
+        return self.sendToMotor(motor_id,message)
+
+
+    # ----- position ------------------------
+    # ----- encoder -------------------------
+    # ----- error ---------------------------
+    # ----- aceleration ---------------------
+
+
+    # ------ utils --------------------------
+    def getValueConfig(self,header,param):
+        path = Path(__file__)
+        ROOT_DIR = path.parent.absolute()
+        config_path = os.path.join(ROOT_DIR, "comands.properties")
+        config = configparser.RawConfigParser()
+        config.read(config_path)
+        return self.getDataHex(config.get(header,param))
+
+    def getDataHex(self,data):
+        
+        if "," in data:
+            data = data.split(',')
+            data_send =  []
+            for value in data:
+                data_send.append(int(value,16))
+            return data_send
+        else:
+            return int(data,16)
 

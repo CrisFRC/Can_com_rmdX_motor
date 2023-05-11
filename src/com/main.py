@@ -1,5 +1,5 @@
 import lib.rmdx_funtions as rmdx
-from configs import CaptureConfigs as cf
+import configs.CaptureConfigs as cf
 
 
 
