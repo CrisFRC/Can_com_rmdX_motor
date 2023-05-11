@@ -3,7 +3,7 @@ import unittest
 from lib.rmdx_funtions  import RMDX  
 
 
-class SendMess(unittest.TestCase):
+class TestCommands(unittest.TestCase):
 
     def test_get_properties(self):
         rmdx = RMDX()
@@ -25,7 +25,7 @@ class SendMess(unittest.TestCase):
         rmdx = RMDX()
         rmdx.setup()
         motor_id = 0x142
-        data = [0x64,0x64,0x64,0x64]
+        data = [0x00,0x00,0x00,0x00]
         res = rmdx.speedClosedLoop(motor_id,data)
         self.assertIsNotNone(res, "the data doesn't have to be null")
 
