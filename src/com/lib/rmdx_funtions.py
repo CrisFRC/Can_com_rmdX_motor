@@ -1,11 +1,14 @@
 import can
 import os
 import time
-from configs import CaptureConfigs as cf
+import configparser
+from pathlib import Path
+import os
 
-def __init__(self,identifier):
+def __init__(self):
     self.bus = None
-    self.identifier = identifier
+    self.header = 'codeTypeAccionHex'
+    self.auto = getValueConfig(self.header,'util.null')
 
 
 def setup(self):
@@ -32,7 +35,7 @@ def setup(self):
 # -------- sends command -------------------------
 
 
-def sendToSingleMotor(self,motor_id,data_command):
+def sendToMotor(self,motor_id,data_command):
     # ----------------- send data to motor ---------------------
     can_id = motor_id
     data = data_command
@@ -50,11 +53,17 @@ def sendToSingleMotor(self,motor_id,data_command):
         
     os.system('sudo /sbin/ip link set can0 down')
     print("MENSAJE RECIVIDO : " + str(receive_message.data))
+    return receive_message
 
 #def sendToMultiMotor(self,motor_id)
 
 # ------ main commands ------------------
-def stopMotor(self):
+def stopMotor(self, motor_id):
+    param = 'motor.stop'
+    data = getValueConfig(self.header,param)
+    data_command = data.append(self.auto)
+    print("EL MENSAJE ENVIADO ES: " + data_command)
+    return self.sendToMotor(motor_id,data_command)
     
     
 # ----- current(torque) -----------------
@@ -66,3 +75,23 @@ def stopMotor(self):
 # ----- encoder -------------------------
 # ----- error ---------------------------
 # ----- aceleration ---------------------
+# ------ utils --------------------------
+def getValueConfig(header,param):
+    path = Path(__file__)
+    ROOT_DIR = path.parent.absolute()
+    config_path = os.path.join(ROOT_DIR, "comands.properties")
+    config = configparser.RawConfigParser()
+    config.read(config_path)
+    return getDataHex(config.get(header,param))
+
+def getDataHex(data):
+    
+    if "," in data:
+        data = data.split(',')
+        data_send =  []
+        for value in data:
+            data_send.append(int(value,16))
+        return data_send
+    else:
+        return int(data,16)
+
