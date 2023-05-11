@@ -11,7 +11,7 @@ class RMDX:
     def __init__(self):
         self.bus = None
         self.header = 'codeTypeAccionHex'
-        self.auto = getValueConfig(self.header,'util.null')
+        # self.auto = self.getValueConfig(self.header,'util.null')
 
 
     def setup(self):
@@ -63,10 +63,9 @@ class RMDX:
     # ------ main commands ------------------
     def stopMotor(self, motor_id):
         param = 'motor.stop'
-        data = getValueConfig(self.header,param)
-        data_command = data.append(self.auto)
-        print("EL MENSAJE ENVIADO ES: " + data_command)
-        return self.sendToMotor(motor_id,data_command)
+        command = self.getValueConfig(self.header,param)
+        message = [command,0x00,0x00,0x00,0x00,0x00,0x00,0x00]
+        return self.sendToMotor(motor_id,message)
         
         
     # ----- current(torque) -----------------
@@ -74,20 +73,30 @@ class RMDX:
 
 
     # ----- speed ---------------------------
+    def speedClosedLoop(self,motor_id, data):
+        param = 'send.speed'
+        command = self.getValueConfig(self.header,param)
+        message = [command, 0x00, 0x00, 0x00,
+                   data[0], data[1], data[2], data[3]]
+        return self.sendToMotor(motor_id,message)
+
+
     # ----- position ------------------------
     # ----- encoder -------------------------
     # ----- error ---------------------------
     # ----- aceleration ---------------------
+
+
     # ------ utils --------------------------
-    def getValueConfig(header,param):
+    def getValueConfig(self,header,param):
         path = Path(__file__)
         ROOT_DIR = path.parent.absolute()
         config_path = os.path.join(ROOT_DIR, "comands.properties")
         config = configparser.RawConfigParser()
         config.read(config_path)
-        return getDataHex(config.get(header,param))
+        return self.getDataHex(config.get(header,param))
 
-    def getDataHex(data):
+    def getDataHex(self,data):
         
         if "," in data:
             data = data.split(',')
