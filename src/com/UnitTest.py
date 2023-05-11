@@ -13,10 +13,10 @@ class SendMess(unittest.TestCase):
         print(data)
         self.assertEqual(data,data_goal)
 
-    #def test_stop_motor(self):
-        #rmdx.setup()
-        #motor_id = 0x142
-        #res = rmdx.stopMotor(motor_id)
+    def test_stop_motor(self):
+        rmdx.setup()
+        motor_id = 0x142
+        res = rmdx.stopMotor(motor_id)
         #self.assertIsNotNone(res, "the data doesn't have to be null")
         
 
