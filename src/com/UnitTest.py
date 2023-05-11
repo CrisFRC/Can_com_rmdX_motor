@@ -9,7 +9,7 @@ class TestCommands(unittest.TestCase):
         rmdx = RMDX()
         header = 'codeTypeAccionHex'
         param = 'send.torque'
-        data = rmdx.getValueConfig(header,param)
+        data = getValueConfig(header,param)
         data_goal = 0xA1
         print(data)
         self.assertEqual(data,data_goal)

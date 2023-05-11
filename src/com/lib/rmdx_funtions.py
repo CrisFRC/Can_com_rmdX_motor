@@ -6,6 +6,7 @@ from pathlib import Path
 import os
 
 
+# ------ utils --------------------------
 def getDataHex(data):
 
     if "," in data:
@@ -16,6 +17,15 @@ def getDataHex(data):
         return data_send
     else:
         return int(data, 16)
+
+
+def getValueConfig(header, param):
+    path = Path(__file__)
+    ROOT_DIR = path.parent.absolute()
+    config_path = os.path.join(ROOT_DIR, "comands.properties")
+    config = configparser.RawConfigParser()
+    config.read(config_path)
+    return getDataHex(config.get(header, param))
 
 
 class RMDX:
@@ -73,19 +83,19 @@ class RMDX:
     # ------ main commands ------------------
     def stopMotor(self, motor_id):
         param = 'motor.stop'
-        command = self.getValueConfig(self.header, param)
+        command = getValueConfig(self.header, param)
         message = [command, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00]
         return self.sendToMotor(motor_id, message)
 
     def runMotor(self,motor_id):
         param = 'motor.run'
-        command = self.getValueConfig(self.header,param)
+        command = getValueConfig(self.header,param)
         message = [command, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00]
         return self.sendToMotor(motor_id, message)
 
     def offMotor(self,motor_id):
         param = 'motor.off'
-        command = self.getValueConfig(self.header,param)
+        command = getValueConfig(self.header,param)
         message = [command, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00]
         return self.sendToMotor(motor_id, message)
 
@@ -94,7 +104,7 @@ class RMDX:
     # ----- speed ---------------------------
     def speedClosedLoop(self, motor_id, data):
         param = 'send.speed'
-        command = self.getValueConfig(self.header, param)
+        command = getValueConfig(self.header, param)
         message = [command, 0x00, 0x00, 0x00,
                    data[0], data[1], data[2], data[3]]
         return self.sendToMotor(motor_id, message)
@@ -102,7 +112,7 @@ class RMDX:
     # ----- position ------------------------
     def setPositionClosedLoop(self, motor_id, data):
         param = 'send.position'
-        command = self.getValueConfig(self.header, param)
+        command = getValueConfig(self.header, param)
         message = [command, 0x00, 0x00, 0x00,data[0], data[1], data[2], data[3]]
         return self.sendToMotor(motor_id,message)
 
@@ -110,11 +120,5 @@ class RMDX:
     # ----- error ---------------------------
     # ----- aceleration ---------------------
 
-    # ------ utils --------------------------
-    def getValueConfig(self, header, param):
-        path = Path(__file__)
-        ROOT_DIR = path.parent.absolute()
-        config_path = os.path.join(ROOT_DIR, "comands.properties")
-        config = configparser.RawConfigParser()
-        config.read(config_path)
-        return getDataHex(config.get(header, param))
+
+
