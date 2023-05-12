@@ -89,20 +89,32 @@ class RMDX:
 
     def runMotor(self,motor_id):
         param = 'motor.run'
-        command = getValueConfig(self.header,param)
+        command = getValueConfig(self.header, param)
         message = [command, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00]
         return self.sendToMotor(motor_id, message)
 
     def offMotor(self,motor_id):
         param = 'motor.off'
-        command = getValueConfig(self.header,param)
+        command = getValueConfig(self.header, param)
+        message = [command, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00]
+        return self.sendToMotor(motor_id, message)
+
+    def getMotorStatus(self,motor_id):
+        param = 'motor.status'
+        command = getValueConfig(self.header, param)
         message = [command, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00]
         return self.sendToMotor(motor_id, message)
 
     # ----- current(torque) -----------------
+    def setTorqueClosedLoop(self, motor_id, data):
+        param = 'send.torque'
+        command = getValueConfig(self.header, param)
+        message = [command, 0x00, 0x00, 0x00,
+                   data[0], data[1], 0x00, 0x00]
+        return self.sendToMotor(motor_id, message)
 
     # ----- speed ---------------------------
-    def speedClosedLoop(self, motor_id, data):
+    def setSpeedClosedLoop(self, motor_id, data):
         param = 'send.speed'
         command = getValueConfig(self.header, param)
         message = [command, 0x00, 0x00, 0x00,
@@ -117,7 +129,20 @@ class RMDX:
         return self.sendToMotor(motor_id,message)
 
     # ----- encoder -------------------------
+    def getEncoder(self,motor_id):
+        param = 'encoder.read'
+        command = getValueConfig(self.header, param)
+        message = [command, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00]
+        return self.sendToMotor(motor_id, message)
+
+    def setEncoderOffset(self,motor_id):
+        param = 'encoder.setOffset'
+        command = getValueConfig(self.header, param)
+        message = [command, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00]
+        return self.sendToMotor(motor_id, message)
+
     # ----- error ---------------------------
+
     # ----- aceleration ---------------------
 
 
