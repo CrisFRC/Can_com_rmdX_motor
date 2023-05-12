@@ -32,7 +32,7 @@ class RMDX:
 
     def __init__(self):
         self.bus = None
-        self.header = 'codeTypeAccionHex'
+        self.header = 'codeTypeActionHex'
         # self.auto = self.getValueConfig(self.header,'util.null')
 
     def setup(self):
@@ -46,7 +46,7 @@ class RMDX:
 
         try:
             # can connection config
-            bus = can.interface.Bus(bustype='socketcan', channel='can0')  # socketcan_native
+            bus = can.interface.Bus(interface='socketcan', channel='can0')  # socketcan_native
         except OSError:
             print('err: PiCAN board was not found')
             exit()
