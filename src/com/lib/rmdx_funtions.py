@@ -135,7 +135,7 @@ class RMDX:
         message = [command, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00]
         return self.sendToMotor(motor_id, message)
 
-    def setEncoderOffset(self,motor_id):
+    def setEncoderOffset(self, motor_id):
         param = 'encoder.setOffset'
         command = getValueConfig(self.header, param)
         message = [command, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00]
@@ -143,7 +143,13 @@ class RMDX:
 
     # ----- error ---------------------------
 
-    # ----- aceleration ---------------------
+    def clearMotorErrorFlag(self, motor_id):
+        param = 'error.clear'
+        command = getValueConfig(self.header, param)
+        message = [command, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00]
+        return self.sendToMotor(motor_id, message)
+
+    # --------------------------
 
 
 
