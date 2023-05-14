@@ -32,7 +32,7 @@ class RMDX:
 
     def __init__(self):
         self.bus = None
-        self.header = 'codeTypeAccionHex'
+        self.header = 'codeTypeActionHex'
         # self.auto = self.getValueConfig(self.header,'util.null')
 
     def setup(self):
